@@ -1,0 +1,21 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Kakao OAuth Redirect</title>
+<h2>카카오 인가 코드</h2>
+<p id="msg">처리 중...</p>
+<script>
+  const p = new URLSearchParams(location.search);
+  const code = p.get('code');
+  const err  = p.get('error');
+  const desc = p.get('error_description');
+  const el = document.getElementById('msg');
+  if (code) {
+    el.innerHTML = `<b>code</b>: <code>${code}</code><br><br>이 값을 토큰 교환에 사용하세요.`;
+    navigator.clipboard && navigator.clipboard.writeText(code).catch(()=>{});
+    window.opener && window.opener.postMessage({kakao_code: code}, "*");
+  } else if (err) {
+    el.innerHTML = `<b>error</b>: ${err}<br><b>desc</b>: ${desc || ''}`;
+  } else {
+    el.textContent = '쿼리에 code가 없습니다.';
+  }
+</script>
